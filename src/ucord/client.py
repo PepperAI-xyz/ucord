@@ -1,4 +1,4 @@
-import requests, os, json, random, threading, time, websocket
+import requests, os, json, threading, time, websocket
 from .user import User
 from .interaction import Interaction
 from .guild import Guild
@@ -59,14 +59,14 @@ class Client:
     def on_ready(self, func):
         self.on_ready_ = func
 
-    def run(self):
+    def run(self, intents = 0):
         self.ws = websocket.create_connection("wss://gateway.discord.gg/?v=8&encoding=json")
         self.interval = json.loads(self.ws.recv())["d"]["heartbeat_interval"] / 1000
         self.ws.send(json.dumps({
             "op": 2,
             "d": {
                 "token": self.token,
-                "intents": 0,
+                "intents": intents,
                 "properties": {
                     "$os": os.name,
                     "$browser": "Ucord v0.1",
